@@ -1,0 +1,13 @@
+{
+  "id": "field_dressing",
+  "name": "Field Dressing",
+  "category": "stim",
+  "description": "Basic wound wrap. Minimal HP restore but better than nothing.",
+  "pickup_text": "",
+  "value": 8,
+  "stackable": true,
+  "max_stack": 10,
+  "voice_profile": "crew_log",
+  "use_effect": { "restore_hp": 5 },
+  "tags": ["medical", "consumable"]
+}

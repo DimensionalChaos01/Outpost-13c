@@ -1,0 +1,15 @@
+{
+  "id": "wall",
+  "image": "Assets/tilesets/TX_Tileset_Wall.png",
+  "cell_size": 32,
+  "cols": 8,
+  "rows": 8,
+  "entries": [
+    {"name": "wall_stone_1",  "cell": 0,  "compatible_types": [1]},
+    {"name": "wall_stone_2",  "cell": 1,  "compatible_types": [1]},
+    {"name": "wall_brick_1",  "cell": 8,  "compatible_types": [1]},
+    {"name": "wall_brick_2",  "cell": 9,  "compatible_types": [1]},
+    {"name": "wall_panel_1",  "cell": 2,  "compatible_types": [1]},
+    {"name": "wall_panel_2",  "cell": 10, "compatible_types": [1]}
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "medical_locker",
+  "rolls": 2,
+  "entries": [
+    {"item_id": "medkit_basic",    "weight": 10},
+    {"item_id": "stimpack",        "weight": 25},
+    {"item_id": "field_dressing",  "weight": 40},
+    {"item_id": "nothing",         "weight": 25}
+  ]
+}

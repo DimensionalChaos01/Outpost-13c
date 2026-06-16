@@ -1,0 +1,15 @@
+{
+  "id": "stone_ground",
+  "image": "Assets/tilesets/TX_Tileset_Stone_Ground.png",
+  "cell_size": 32,
+  "cols": 8,
+  "rows": 8,
+  "entries": [
+    {"name": "stone_floor_1",  "cell": 0,  "compatible_types": [2]},
+    {"name": "stone_floor_2",  "cell": 1,  "compatible_types": [2]},
+    {"name": "stone_floor_3",  "cell": 8,  "compatible_types": [2]},
+    {"name": "stone_floor_4",  "cell": 9,  "compatible_types": [2]},
+    {"name": "stone_floor_5",  "cell": 2,  "compatible_types": [2]},
+    {"name": "stone_floor_6",  "cell": 10, "compatible_types": [2]}
+  ]
+}

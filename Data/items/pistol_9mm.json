@@ -1,0 +1,13 @@
+{
+  "id": "pistol_9mm",
+  "name": "9mm Pistol",
+  "category": "weapon",
+  "description": "Standard-issue sidearm. Reliable at close range.",
+  "pickup_text": "The magazine is loaded.",
+  "value": 80,
+  "stackable": false,
+  "max_stack": 1,
+  "voice_profile": "station_ambient",
+  "use_effect": {},
+  "tags": ["weapon", "ranged", "kinetic"]
+}

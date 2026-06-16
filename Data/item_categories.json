@@ -1,0 +1,11 @@
+[
+  {"id":"weapon",   "display_name":"Weapons",    "icon":""},
+  {"id":"melee",    "display_name":"Melee",       "icon":""},
+  {"id":"trap",     "display_name":"Traps",       "icon":""},
+  {"id":"armor",    "display_name":"Armor",       "icon":""},
+  {"id":"stim",     "display_name":"Stims",       "icon":""},
+  {"id":"container","display_name":"Containers",  "icon":""},
+  {"id":"disabler", "display_name":"Disablers",   "icon":""},
+  {"id":"misc",     "display_name":"Misc",        "icon":""},
+  {"id":"ammo",     "display_name":"Ammo",        "icon":""}
+]

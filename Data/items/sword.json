@@ -1,0 +1,13 @@
+{
+  "id": "sword",
+  "name": "Sword",
+  "category": "melee",
+  "description": "A short maintenance blade repurposed as a weapon. Heavy enough to matter.",
+  "pickup_text": "The edge is still good.",
+  "value": 40,
+  "stackable": false,
+  "max_stack": 1,
+  "voice_profile": "station_ambient",
+  "use_effect": {},
+  "tags": ["weapon", "melee", "blade"]
+}

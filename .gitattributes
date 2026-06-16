@@ -1,0 +1,13 @@
+# Default: normalize to LF on checkout
+* text=auto eol=lf
+
+# Shell scripts must stay LF
+*.sh text eol=lf
+
+# Windows batch files get CRLF
+*.bat text eol=crlf
+
+# Binaries
+*.png binary
+*.wav binary
+*.ogg binary

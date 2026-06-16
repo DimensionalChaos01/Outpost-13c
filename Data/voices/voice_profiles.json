@@ -1,0 +1,44 @@
+{
+  "profiles": [
+    {
+      "id": "station_ambient",
+      "display_name": "Station Ambient",
+      "text_colour": [200, 200, 215],
+      "text_speed": 0.03,
+      "blip_sound": "",
+      "portrait": "",
+      "name_colour": [150, 150, 180],
+      "special_effects": []
+    },
+    {
+      "id": "crew_log",
+      "display_name": "Crew Log",
+      "text_colour": [230, 225, 210],
+      "text_speed": 0.025,
+      "blip_sound": "",
+      "portrait": "",
+      "name_colour": [180, 175, 160],
+      "special_effects": []
+    },
+    {
+      "id": "corrupted_terminal",
+      "display_name": "Corrupted Terminal",
+      "text_colour": [80, 220, 100],
+      "text_speed": 0.015,
+      "blip_sound": "",
+      "portrait": "",
+      "name_colour": [60, 160, 80],
+      "special_effects": ["glitch"]
+    },
+    {
+      "id": "intercom",
+      "display_name": "Intercom",
+      "text_colour": [210, 215, 230],
+      "text_speed": 0.025,
+      "blip_sound": "",
+      "portrait": "",
+      "name_colour": [160, 165, 180],
+      "special_effects": []
+    }
+  ]
+}

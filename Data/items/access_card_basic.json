@@ -1,0 +1,13 @@
+{
+  "id": "access_card_basic",
+  "name": "Access Card",
+  "category": "misc",
+  "description": "A standard-clearance access card. Opens most general-use areas.",
+  "pickup_text": "CLEARANCE LEVEL: GENERAL. Issued by Station Administration.",
+  "value": 50,
+  "stackable": false,
+  "max_stack": 1,
+  "voice_profile": "intercom",
+  "use_effect": {},
+  "tags": ["key", "access"]
+}

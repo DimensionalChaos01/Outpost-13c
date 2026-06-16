@@ -1,0 +1,37 @@
+{
+  "current_map": "Data/levels/test.json",
+  "current_shift": "night",
+  "day_counter": 1,
+  "flags": {},
+  "inventory": [
+    {
+      "id": "sword",
+      "qty": 1
+    }
+  ],
+  "morale": 75,
+  "play_time_seconds": 36,
+  "player_facing": "east",
+  "player_name": "Player",
+  "player_position": {
+    "x": 15,
+    "y": 5
+  },
+  "player_stats": {
+    "agility": 1,
+    "defense": 1,
+    "discipline": 1,
+    "endurance": 1,
+    "fortitude": 1,
+    "hp_current": 6,
+    "hp_max": 6,
+    "perception": 1,
+    "sanity_current": 100,
+    "sanity_max": 100,
+    "strength": 1,
+    "value": 100
+  },
+  "save_name": "Save",
+  "simulated_time": 289,
+  "timestamp": "2026-05-07 22:30"
+}

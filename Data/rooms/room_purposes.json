@@ -1,0 +1,17 @@
+{
+  "purposes": [
+    {"tag":"untagged",       "display_name":"Untagged",       "valid_roles":[],                      "shift":"both",  "capacity":0},
+    {"tag":"engineering",    "display_name":"Engineering",    "valid_roles":["engineer"],             "shift":"both",  "capacity":4},
+    {"tag":"medical",        "display_name":"Medical",        "valid_roles":["medic"],                "shift":"both",  "capacity":3},
+    {"tag":"security",       "display_name":"Security",       "valid_roles":["security"],             "shift":"both",  "capacity":4},
+    {"tag":"antenna",        "display_name":"Antenna Array",  "valid_roles":["comms"],                "shift":"both",  "capacity":2},
+    {"tag":"research",       "display_name":"Research",       "valid_roles":["researcher"],           "shift":"both",  "capacity":4},
+    {"tag":"cafeteria",      "display_name":"Cafeteria",      "valid_roles":[],                      "shift":"day",   "capacity":20},
+    {"tag":"quarters",       "display_name":"Crew Quarters",  "valid_roles":[],                      "shift":"night", "capacity":6},
+    {"tag":"docking",        "display_name":"Docking",        "valid_roles":["dockmaster"],           "shift":"both",  "capacity":6},
+    {"tag":"visitor_centre", "display_name":"Visitor Centre", "valid_roles":["liaison"],              "shift":"day",   "capacity":15},
+    {"tag":"storage",        "display_name":"Storage",        "valid_roles":[],                      "shift":"both",  "capacity":0},
+    {"tag":"maintenance",    "display_name":"Maintenance",    "valid_roles":["engineer"],             "shift":"both",  "capacity":2},
+    {"tag":"admin",          "display_name":"Admin",          "valid_roles":["commander","admin"],    "shift":"day",   "capacity":6}
+  ]
+}

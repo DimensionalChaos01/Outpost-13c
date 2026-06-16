@@ -1,0 +1,31 @@
+{
+  "categories": [
+    {
+      "id": "food",
+      "display_name": "Food and Drink",
+      "items": []
+    },
+    {
+      "id": "medical",
+      "display_name": "Medical Supplies",
+      "items": []
+    },
+    {
+      "id": "equipment",
+      "display_name": "Equipment and Tools",
+      "items": []
+    },
+    {
+      "id": "amenities",
+      "display_name": "Crew Amenities",
+      "morale_boost": true,
+      "items": []
+    },
+    {
+      "id": "parts",
+      "display_name": "Spare Parts",
+      "items": []
+    }
+  ],
+  "note": "Populate items when content phase begins."
+}

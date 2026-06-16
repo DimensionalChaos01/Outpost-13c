@@ -1,0 +1,10 @@
+[
+  {"id":0,"name":"Void",            "walkable":false,"pathable":false,"placeholder_colour":[0,0,0],      "auto_tile":false},
+  {"id":1,"name":"Wall",            "walkable":false,"pathable":false,"placeholder_colour":[40,40,50],   "auto_tile":false},
+  {"id":2,"name":"Floor",           "walkable":true, "pathable":true, "placeholder_colour":[78,78,90],   "auto_tile":false},
+  {"id":3,"name":"Door",            "walkable":false,"pathable":false,"placeholder_colour":[108,72,35],  "auto_tile":false},
+  {"id":4,"name":"Metal Floor",     "walkable":true, "pathable":true, "placeholder_colour":[90,90,105],  "auto_tile":false},
+  {"id":5,"name":"Carpet Floor",    "walkable":true, "pathable":true, "placeholder_colour":[68,80,72],   "auto_tile":false},
+  {"id":6,"name":"Reinforced Wall", "walkable":false,"pathable":false,"placeholder_colour":[28,28,38],   "auto_tile":false},
+  {"id":7,"name":"Hull Wall",       "walkable":false,"pathable":false,"placeholder_colour":[18,20,30],   "auto_tile":false}
+]

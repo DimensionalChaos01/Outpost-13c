@@ -1,0 +1,13 @@
+{
+  "id": "ammo_9mm",
+  "name": "9mm Rounds",
+  "category": "ammo",
+  "description": "Standard 9mm pistol ammunition. Fits most sidearms.",
+  "pickup_text": "",
+  "value": 1,
+  "stackable": true,
+  "max_stack": 50,
+  "voice_profile": "station_ambient",
+  "use_effect": {},
+  "tags": ["ammo", "kinetic"]
+}

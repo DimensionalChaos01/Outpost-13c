@@ -1,0 +1,13 @@
+{
+  "id": "medkit_basic",
+  "name": "Basic Medkit",
+  "category": "stim",
+  "description": "A standard-issue field medkit. Stops bleeding and restores moderate HP.",
+  "pickup_text": "The seal is intact.",
+  "value": 25,
+  "stackable": false,
+  "max_stack": 1,
+  "voice_profile": "crew_log",
+  "use_effect": { "restore_hp": 20 },
+  "tags": ["medical", "consumable"]
+}

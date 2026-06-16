@@ -1,0 +1,13 @@
+{
+  "id": "flashbang",
+  "name": "Flashbang",
+  "category": "trap",
+  "description": "A compact disorientation device. Temporarily blinds and disorients targets.",
+  "pickup_text": "Handle carefully. Pin is intact.",
+  "value": 35,
+  "stackable": true,
+  "max_stack": 4,
+  "voice_profile": "station_ambient",
+  "use_effect": {},
+  "tags": ["disabler", "throwable"]
+}

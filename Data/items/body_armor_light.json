@@ -1,0 +1,13 @@
+{
+  "id": "body_armor_light",
+  "name": "Light Body Armor",
+  "category": "armor",
+  "description": "A thin composite vest. Offers basic protection without restricting movement.",
+  "pickup_text": "Slightly scuffed but structurally sound.",
+  "value": 120,
+  "stackable": false,
+  "max_stack": 1,
+  "voice_profile": "crew_log",
+  "use_effect": {},
+  "tags": ["armor", "worn"]
+}

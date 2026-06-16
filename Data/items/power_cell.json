@@ -1,0 +1,13 @@
+{
+  "id": "power_cell",
+  "name": "Power Cell",
+  "category": "misc",
+  "description": "A rechargeable energy cell. Powers a range of station equipment.",
+  "pickup_text": "Still has some charge.",
+  "value": 30,
+  "stackable": true,
+  "max_stack": 5,
+  "voice_profile": "station_ambient",
+  "use_effect": {},
+  "tags": ["power", "equipment"]
+}

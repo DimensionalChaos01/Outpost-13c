@@ -1,0 +1,13 @@
+{
+  "roles": [
+    { "id": "engineer", "display_name": "Engineer" },
+    { "id": "technician", "display_name": "Technician" },
+    { "id": "security", "display_name": "Security" },
+    { "id": "mercenary", "display_name": "Mercenary" },
+    { "id": "medical", "display_name": "Medical" },
+    { "id": "general", "display_name": "General Worker" },
+    { "id": "researcher", "display_name": "Researcher" }
+  ],
+  "contractors": [],
+  "note": "Populate contractors when content phase begins. Contractors are generated dynamically from species pool."
+}

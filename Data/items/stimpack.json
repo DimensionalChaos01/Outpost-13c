@@ -1,0 +1,13 @@
+{
+  "id": "stimpack",
+  "name": "Stimpack",
+  "category": "stim",
+  "description": "A quick-dose stimulant. Restores a small amount of HP on injection.",
+  "pickup_text": "",
+  "value": 15,
+  "stackable": true,
+  "max_stack": 5,
+  "voice_profile": "crew_log",
+  "use_effect": { "restore_hp": 10 },
+  "tags": ["medical", "consumable"]
+}

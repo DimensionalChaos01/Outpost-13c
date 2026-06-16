@@ -1,0 +1,6 @@
+build/
+*.o
+*.exe
+.vscode/
+*.user
+libs/SDL2-mingw/

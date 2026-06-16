@@ -1,0 +1,2 @@
+#pragma once
+enum class GameState { EXPLORING, INVENTORY, TEXT, CONTAINER, COMBAT, EDITOR, TERMINAL_DISPLAY };

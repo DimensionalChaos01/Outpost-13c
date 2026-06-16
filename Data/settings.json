@@ -1,0 +1,46 @@
+{
+  "audio": {
+    "ambient": 60,
+    "master": 80,
+    "music": 70,
+    "sfx": 80
+  },
+  "camera": {
+    "default_zoom": 2.0,
+    "follow_speed": 8.0,
+    "smooth_follow": true
+  },
+  "display": {
+    "fullscreen": false,
+    "resolution_h": 720,
+    "resolution_w": 1280,
+    "show_grid": false,
+    "ui_scale": 1,
+    "vsync": true
+  },
+  "keybinds": {
+    "editor_entity": "E",
+    "editor_erase": "X",
+    "editor_eyedropper": "Q",
+    "editor_fill": "F",
+    "editor_paint": "B",
+    "editor_play_test": "F5",
+    "editor_redo": "Ctrl+Y",
+    "editor_save": "Ctrl+S",
+    "editor_select": "S",
+    "editor_texture_mode": "T",
+    "editor_texture_picker": "Backslash",
+    "editor_toggle_entities": "V",
+    "editor_toggle_grid": "G",
+    "editor_toggle_path": "P",
+    "editor_undo": "Ctrl+Z",
+    "interact": "F",
+    "inventory": "I",
+    "move_down": "S",
+    "move_left": "A",
+    "move_right": "D",
+    "move_up": "W",
+    "pause": "Escape",
+    "playtest_return_to_editor": "Escape"
+  }
+}
