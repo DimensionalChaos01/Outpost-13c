@@ -471,6 +471,20 @@ const EntityInstance* Map::find_entity_at(int x, int y) const {
     return nullptr;
 }
 
+std::vector<EntityInstance*> Map::find_entities_at(int x, int y) {
+    std::vector<EntityInstance*> result;
+    for (auto& e : entities_)
+        if (e.x == x && e.y == y) result.push_back(&e);
+    return result;
+}
+
+std::vector<const EntityInstance*> Map::find_entities_at(int x, int y) const {
+    std::vector<const EntityInstance*> result;
+    for (const auto& e : entities_)
+        if (e.x == x && e.y == y) result.push_back(&e);
+    return result;
+}
+
 EntityInstance* Map::find_entity_by_uid(uint32_t uid) {
     for (auto& e : entities_)
         if (e.uid == uid) return &e;

@@ -20,7 +20,8 @@ public:
     Action handle_event(const SDL_Event& e,
                         PlayerInventory& inv,
                         const std::vector<ItemDef>& defs,
-                        TextQueue& tq);
+                        TextQueue& tq,
+                        PlayerStats& stats);
 
     // Hit-test tab bar; call on SDL_MOUSEBUTTONDOWN when inventory is open.
     Action handle_mouse(int mx, int my, int screen_w);

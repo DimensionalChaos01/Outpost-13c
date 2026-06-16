@@ -74,7 +74,8 @@ void InventoryUI::open(const PlayerInventory& inv,
 InventoryUI::Action InventoryUI::handle_event(const SDL_Event& e,
                                                PlayerInventory& inv,
                                                const std::vector<ItemDef>& defs,
-                                               TextQueue& tq) {
+                                               TextQueue& tq,
+                                               PlayerStats& stats) {
     if (e.type != SDL_KEYDOWN) return Action::None;
     const SDL_Keycode sym = e.key.keysym.sym;
 
@@ -143,8 +144,11 @@ InventoryUI::Action InventoryUI::handle_event(const SDL_Event& e,
 
     if (sym == SDLK_e) {
         if (d && d->use_effect.restore_hp > 0) {
+            const int healed = std::min(d->use_effect.restore_hp, stats.hp_max - stats.hp_current);
+            stats.hp_current += healed;
             TextEntry te;
-            te.text             = std::string("Used ") + d->name + ".";
+            te.text             = std::string("Used ") + d->name + "."
+                                  + (healed > 0 ? " +" + std::to_string(healed) + " HP." : " Already at full HP.");
             te.voice_profile_id = d->voice_profile.empty() ? "crew_log" : d->voice_profile;
             te.dismiss          = "auto";
             tq.push(te);

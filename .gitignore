@@ -4,3 +4,4 @@ build/
 .vscode/
 *.user
 libs/SDL2-mingw/
+Data/saves/

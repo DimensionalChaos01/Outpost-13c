@@ -188,6 +188,103 @@ static bool run_game(Renderer& renderer, Map& map, const std::string& map_path,
     bool      tick_pending = false;
     SDL_Event event;
 
+    auto do_render = [&]() {
+        renderer.clear();
+        renderer.draw_map(map, fog, cam);
+        renderer.draw_player(player, cam);
+
+        // ── Tile hover info HUD ──────────────────────────────────────────────
+        {
+            int mx = 0, my = 0;
+            SDL_GetMouseState(&mx, &my);
+            const int htx = cam.to_tile_x(mx), hty = cam.to_tile_y(my);
+            const Tile& ht = map.get_tile(htx, hty);
+            if (ht.tile_id > 0) {
+                std::vector<std::string> hlines;
+                const TileDef& tdef = get_tile_def(tile_defs, ht.tile_id);
+                std::string tname = tdef.name;
+                if (ht.tile_id == 3) {
+                    if      (ht.door_state == DoorState::Open)   tname += " (open)";
+                    else if (ht.door_state == DoorState::Locked) tname += " (locked)";
+                    else                                          tname += " (closed)";
+                }
+                hlines.push_back(tname);
+                if (!ht.texture_id.empty()) {
+                    const auto col = ht.texture_id.find(':');
+                    hlines.push_back(col != std::string::npos
+                        ? ht.texture_id.substr(col + 1) : ht.texture_id);
+                }
+                for (const auto& ei : map.get_entities()) {
+                    if (ei.x != htx || ei.y != hty) continue;
+                    const EntityDef* edef = find_entity_def(entity_defs, ei.type_id);
+                    std::string ename = edef ? edef->name : ei.type_id;
+                    if (!ei.label.empty()) ename += " (" + ei.label + ")";
+                    hlines.push_back(ename);
+                }
+                renderer.draw_tile_hover_hud(hlines);
+            }
+        }
+
+        if (cam.is_detached())
+            renderer.draw_text("Camera free \xe2\x80\x94 move to recentre",
+                               cam.map_left()+4, cam.map_top()+4, 220,200,60);
+
+        if (gs == GameState::INVENTORY)
+            inventory_ui.render(renderer, inventory, item_defs, item_categories,
+                                player.stats(), player.name());
+
+        if (gs == GameState::TERMINAL_DISPLAY)
+            terminal_panel.render(renderer, sim_time_minutes);
+
+        if (gs == GameState::CONTAINER) {
+            const EntityInstance* cei = map.find_entity_by_uid(container_ui.entity_uid());
+            if (cei) container_ui.render(renderer, *cei, item_defs);
+        }
+
+        // ── Combat stat corner (HP / SAN reference, top-right) ───────────────
+        if (gs == GameState::COMBAT) {
+            const PlayerStats& ps = player.stats();
+            constexpr int CW = 190, CH = 50, CM = 8;
+            const int cx = renderer.screen_w() - CW - CM;
+            const int cy = CM;
+            renderer.fill_rect(cx, cy, CW, CH, 14, 16, 24, 220);
+            renderer.draw_rect_outline(cx, cy, CW, CH, 50, 55, 70);
+
+            constexpr int BAR_W = 80, PAD = 6;
+            const int lx = cx + PAD, bx = cx + CW - BAR_W - PAD;
+
+            {
+                renderer.draw_text("HP", lx, cy+6, 160,170,180);
+                const std::string hs = std::to_string(ps.hp_current)+"/"+std::to_string(ps.hp_max);
+                renderer.draw_text(hs, bx - renderer.text_width(hs) - 4, cy+6, 170,175,190);
+                const float f = ps.hp_max>0 ? (float)ps.hp_current/ps.hp_max : 0.f;
+                Uint8 r,g,b;
+                if(f>0.5f){r=50;g=200;b=50;}else if(f>0.25f){r=220;g=180;b=20;}else{r=220;g=40;b=40;}
+                renderer.fill_rect(bx, cy+6, BAR_W, 9, 20,22,32);
+                renderer.fill_rect(bx, cy+6, (int)(BAR_W*f), 9, r,g,b);
+            }
+            {
+                renderer.draw_text("SAN", lx, cy+26, 160,170,180);
+                const std::string ss = std::to_string(ps.sanity_current)+"/"+std::to_string(ps.sanity_max);
+                renderer.draw_text(ss, bx - renderer.text_width(ss) - 4, cy+26, 170,175,190);
+                const float f = ps.sanity_max>0 ? (float)ps.sanity_current/ps.sanity_max : 0.f;
+                Uint8 r,g,b;
+                if(f>0.5f){r=180;g=200;b=230;}else if(f>0.25f){r=140;g=60;b=180;}else{r=160;g=20;b=40;}
+                renderer.fill_rect(bx, cy+26, BAR_W, 9, 20,22,32);
+                renderer.fill_rect(bx, cy+26, (int)(BAR_W*f), 9, r,g,b);
+            }
+        }
+
+        if (text_queue.is_active())
+            text_queue.render(renderer, renderer.screen_w(), renderer.screen_h());
+
+        if (show_controls_)           renderer.draw_game_controls_overlay();
+        if (pause_menu.is_open())     pause_menu.render(renderer);
+        if (settings_panel.is_open()) settings_panel.render(renderer);
+        if (notes.is_open())          notes.render(renderer);
+        renderer.present();
+    };
+
     while (running) {
         // ── Controls overlay ──────────────────────────────────────────────────
         if (show_controls_) {
@@ -197,7 +294,7 @@ static bool run_game(Renderer& renderer, Map& map, const std::string& map_path,
                 if (ce.type == SDL_KEYDOWN || ce.type == SDL_MOUSEBUTTONDOWN)
                     show_controls_ = false;
             }
-            goto render;
+            do_render(); continue;
         }
 
         // ── Pause menu / settings event handling ──────────────────────────────
@@ -251,7 +348,7 @@ static bool run_game(Renderer& renderer, Map& map, const std::string& map_path,
                     default: break;
                 }
             }
-            goto render;
+            do_render(); continue;
         }
 
         // ── Container UI event routing ────────────────────────────────────────
@@ -310,7 +407,7 @@ static bool run_game(Renderer& renderer, Map& map, const std::string& map_path,
                     gs = GameState::EXPLORING; break;
                 }
             }
-            goto render;
+            do_render(); continue;
         }
 
         // ── Terminal display event routing ────────────────────────────────────
@@ -320,7 +417,7 @@ static bool run_game(Renderer& renderer, Map& map, const std::string& map_path,
                 if (terminal_panel.handle_event(event))
                     gs = GameState::EXPLORING;
             }
-            goto render;
+            do_render(); continue;
         }
 
         // ── Normal game events ────────────────────────────────────────────────
@@ -363,7 +460,7 @@ static bool run_game(Renderer& renderer, Map& map, const std::string& map_path,
 
                 // Route events to inventory UI.
                 if (gs == GameState::INVENTORY) {
-                    const auto act = inventory_ui.handle_event(event, inventory, item_defs, text_queue);
+                    const auto act = inventory_ui.handle_event(event, inventory, item_defs, text_queue, player.stats());
                     if (act == InventoryUI::Action::Close) {
                         gs = GameState::EXPLORING;
                     } else if (act == InventoryUI::Action::Inspecting) {
@@ -607,106 +704,7 @@ static bool run_game(Renderer& renderer, Map& map, const std::string& map_path,
                 gs = GameState::EXPLORING;
         }
 
-        render:
-        renderer.clear();
-        renderer.draw_map(map, fog, cam);
-        renderer.draw_player(player, cam);
-
-        // ── Tile hover info HUD ──────────────────────────────────────────────
-        {
-            int mx = 0, my = 0;
-            SDL_GetMouseState(&mx, &my);
-            const int htx = cam.to_tile_x(mx), hty = cam.to_tile_y(my);
-            const Tile& ht = map.get_tile(htx, hty);
-            if (ht.tile_id > 0) {
-                std::vector<std::string> hlines;
-                // Tile name
-                const TileDef& tdef = get_tile_def(tile_defs, ht.tile_id);
-                std::string tname = tdef.name;
-                if (ht.tile_id == 3) {
-                    if      (ht.door_state == DoorState::Open)   tname += " (open)";
-                    else if (ht.door_state == DoorState::Locked) tname += " (locked)";
-                    else                                          tname += " (closed)";
-                }
-                hlines.push_back(tname);
-                // Texture
-                if (!ht.texture_id.empty()) {
-                    const auto col = ht.texture_id.find(':');
-                    hlines.push_back(col != std::string::npos
-                        ? ht.texture_id.substr(col + 1) : ht.texture_id);
-                }
-                // Entities at tile
-                for (const auto& ei : map.get_entities()) {
-                    if (ei.x != htx || ei.y != hty) continue;
-                    const EntityDef* edef = find_entity_def(entity_defs, ei.type_id);
-                    std::string ename = edef ? edef->name : ei.type_id;
-                    if (!ei.label.empty()) ename += " (" + ei.label + ")";
-                    hlines.push_back(ename);
-                }
-                renderer.draw_tile_hover_hud(hlines);
-            }
-        }
-
-        if (cam.is_detached())
-            renderer.draw_text("Camera free \xe2\x80\x94 move to recentre",
-                               cam.map_left()+4, cam.map_top()+4, 220,200,60);
-
-        if (gs == GameState::INVENTORY)
-            inventory_ui.render(renderer, inventory, item_defs, item_categories,
-                                player.stats(), player.name());
-
-        if (gs == GameState::TERMINAL_DISPLAY)
-            terminal_panel.render(renderer, sim_time_minutes);
-
-        if (gs == GameState::CONTAINER) {
-            const EntityInstance* cei = map.find_entity_by_uid(container_ui.entity_uid());
-            if (cei) container_ui.render(renderer, *cei, item_defs);
-        }
-
-        // ── Combat stat corner (HP / SAN reference, top-right) ───────────────
-        if (gs == GameState::COMBAT) {
-            const PlayerStats& ps = player.stats();
-            constexpr int CW = 190, CH = 50, CM = 8;
-            const int cx = renderer.screen_w() - CW - CM;
-            const int cy = CM;
-            renderer.fill_rect(cx, cy, CW, CH, 14, 16, 24, 220);
-            renderer.draw_rect_outline(cx, cy, CW, CH, 50, 55, 70);
-
-            constexpr int BAR_W = 80, PAD = 6;
-            const int lx = cx + PAD, bx = cx + CW - BAR_W - PAD;
-
-            // HP row
-            {
-                renderer.draw_text("HP", lx, cy+6, 160,170,180);
-                const std::string hs = std::to_string(ps.hp_current)+"/"+std::to_string(ps.hp_max);
-                renderer.draw_text(hs, bx - renderer.text_width(hs) - 4, cy+6, 170,175,190);
-                const float f = ps.hp_max>0 ? (float)ps.hp_current/ps.hp_max : 0.f;
-                Uint8 r,g,b;
-                if(f>0.5f){r=50;g=200;b=50;}else if(f>0.25f){r=220;g=180;b=20;}else{r=220;g=40;b=40;}
-                renderer.fill_rect(bx, cy+6, BAR_W, 9, 20,22,32);
-                renderer.fill_rect(bx, cy+6, (int)(BAR_W*f), 9, r,g,b);
-            }
-            // SAN row
-            {
-                renderer.draw_text("SAN", lx, cy+26, 160,170,180);
-                const std::string ss = std::to_string(ps.sanity_current)+"/"+std::to_string(ps.sanity_max);
-                renderer.draw_text(ss, bx - renderer.text_width(ss) - 4, cy+26, 170,175,190);
-                const float f = ps.sanity_max>0 ? (float)ps.sanity_current/ps.sanity_max : 0.f;
-                Uint8 r,g,b;
-                if(f>0.5f){r=180;g=200;b=230;}else if(f>0.25f){r=140;g=60;b=180;}else{r=160;g=20;b=40;}
-                renderer.fill_rect(bx, cy+26, BAR_W, 9, 20,22,32);
-                renderer.fill_rect(bx, cy+26, (int)(BAR_W*f), 9, r,g,b);
-            }
-        }
-
-        if (text_queue.is_active())
-            text_queue.render(renderer, renderer.screen_w(), renderer.screen_h());
-
-        if (show_controls_)          renderer.draw_game_controls_overlay();
-        if (pause_menu.is_open())    pause_menu.render(renderer);
-        if (settings_panel.is_open())settings_panel.render(renderer);
-        if (notes.is_open())         notes.render(renderer);
-        renderer.present();
+        do_render();
     }
 
     settings.cam_default_zoom = cam.zoom();

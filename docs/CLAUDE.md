@@ -215,6 +215,21 @@ Some entries redacted. Some wrong in ways that matter later.
 
 ---
 
+## Planned Systems (Not Yet Implemented)
+
+**Hotbar — Items (1–0 keys)**
+Ten-slot horizontal hotbar at the bottom of the screen.
+Number keys 1–0 assign the held item. Holding an item makes it the active
+tool/weapon for interaction and combat. Slots are persisted in save files.
+
+**Hotbar — Abilities / Augmentations (Scroll Wheel, 1–5 slots)**
+A second vertical hotbar on the right side, five slots, cycled with the scroll
+wheel. Holds active abilities, spells, or augmentations (depending on final
+setting). Separate from the item hotbar. Not usable during movement — must
+be activated explicitly.
+
+---
+
 ## What NOT to Do
 
 - Do not use a game engine (no Godot, no Unity, no SFML game loop wrappers)

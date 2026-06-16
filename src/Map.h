@@ -123,6 +123,8 @@ public:
 
     EntityInstance*       find_entity_at(int x, int y);
     const EntityInstance* find_entity_at(int x, int y) const;
+    std::vector<EntityInstance*>       find_entities_at(int x, int y);
+    std::vector<const EntityInstance*> find_entities_at(int x, int y) const;
     EntityInstance*       find_entity_by_uid(uint32_t uid);
     const EntityInstance* find_entity_by_uid(uint32_t uid) const;
 
