@@ -9,6 +9,9 @@
 #include "EntityDef.h"
 #include "TextureAtlas.h"
 #include "VoiceProfile.h"
+#include "Hotbar.h"
+#include "ItemDef.h"
+#include "PlayerInventory.h"
 
 class Map;
 class FogOfWar;
@@ -162,6 +165,16 @@ public:
     // Draw one cell from a texture atlas at screen coords (x,y) at size (w,h).
     void draw_atlas_cell(const TextureAtlas& atlas, int cell_idx,
                          int x, int y, int w, int h, Uint8 alpha = 255);
+
+    // ── HUD ───────────────────────────────────────────────────────────────────
+    void draw_hotbar(const Hotbar& hb,
+                     const PlayerInventory& inv,
+                     const std::vector<ItemDef>& defs);
+
+    // Draw a floating inspect tooltip near (mx, my). Only for entities.
+    void draw_inspect_tooltip(const EntityInstance& ei,
+                              const std::vector<EntityDef>& defs,
+                              int mx, int my);
 
 private:
     bool try_load_font(int pt_size);

@@ -28,6 +28,10 @@ public:
 
     const std::string& last_dropped_id() const { return dropped_id_; }
 
+    // Returns item_id of the currently highlighted row, or "" if none.
+    std::string selected_item_id(const PlayerInventory& inv,
+                                 const std::vector<ItemDef>& defs) const;
+
     void render(Renderer& rnd,
                 const PlayerInventory& inv,
                 const std::vector<ItemDef>& defs,

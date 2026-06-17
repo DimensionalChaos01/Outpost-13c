@@ -388,6 +388,13 @@ void InventoryUI::render(Renderer& rnd,
     }
 }
 
+std::string InventoryUI::selected_item_id(const PlayerInventory& inv,
+                                            const std::vector<ItemDef>& defs) const {
+    auto items = visible_items(inv, defs);
+    if (selected_row_ < 0 || selected_row_ >= (int)items.size()) return {};
+    return items[selected_row_].item_id;
+}
+
 // ── Mouse event handler ───────────────────────────────────────────────────────
 
 InventoryUI::Action InventoryUI::handle_mouse(int mx, int my, int screen_w) {

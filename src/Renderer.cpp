@@ -1308,6 +1308,114 @@ void Renderer::draw_shortcuts_overlay() {
     }
 }
 
+// ── Hotbar ────────────────────────────────────────────────────────────────────
+
+void Renderer::draw_hotbar(const Hotbar& hb,
+                            const PlayerInventory& inv,
+                            const std::vector<ItemDef>& defs) {
+    const int sw = screen_w(), sh = screen_h();
+    constexpr int S    = 44;
+    constexpr int GAP  = 3;
+    constexpr int MARG = 10;
+
+    // ── Bottom item hotbar ────────────────────────────────────────────────────
+    const int total_w = Hotbar::k_item_slots * (S + GAP) - GAP;
+    const int bx0     = (sw - total_w) / 2;
+    const int by      = sh - S - MARG;
+
+    for (int i = 0; i < Hotbar::k_item_slots; ++i) {
+        const int  bx     = bx0 + i * (S + GAP);
+        const bool active = (i == hb.active_item_slot);
+        const bool filled = !hb.item_slots[i].empty();
+
+        fill_rect(bx, by, S, S, active ? 18 : 10, active ? 22 : 13, active ? 34 : 20, 220);
+        draw_rect_outline(bx, by, S, S,
+                          active ? 180 : 50, active ? 200 : 58, active ? 255 : 75);
+
+        const std::string num_s = std::to_string((i + 1) % 10);
+        draw_text(num_s, bx + 3, by + 3, 80, 85, 105);
+
+        if (filled) {
+            const ItemDef* def = find_item_def(defs, hb.item_slots[i]);
+            std::string name = def ? def->name : hb.item_slots[i];
+            while (!name.empty() && text_width(name) > S - 6) name.pop_back();
+            draw_text(name,
+                      bx + (S - text_width(name)) / 2,
+                      by + S / 2 - 4,
+                      active ? 240 : 175, active ? 245 : 180, active ? 255 : 195);
+
+            const int qty = inv.get_quantity(hb.item_slots[i]);
+            if (qty > 0) {
+                const std::string qs = std::to_string(qty);
+                draw_text(qs, bx + S - 3 - text_width(qs), by + S - 15, 140, 190, 120);
+            }
+        }
+    }
+
+    // ── Right ability hotbar ──────────────────────────────────────────────────
+    const int total_h = Hotbar::k_ability_slots * (S + GAP) - GAP;
+    const int rx      = sw - S - MARG;
+    const int ry0     = (sh - total_h) / 2;
+
+    for (int i = 0; i < Hotbar::k_ability_slots; ++i) {
+        const int  ry     = ry0 + i * (S + GAP);
+        const bool active = (i == hb.active_ability_slot);
+
+        fill_rect(rx, ry, S, S, active ? 18 : 10, active ? 14 : 10, active ? 32 : 20, 200);
+        draw_rect_outline(rx, ry, S, S,
+                          active ? 160 : 45, active ? 130 : 40, active ? 255 : 70);
+
+        const std::string num_s = std::to_string(i + 1);
+        draw_text(num_s, rx + 3, ry + 3, 75, 70, 100);
+    }
+}
+
+// ── Inspect tooltip ───────────────────────────────────────────────────────────
+
+void Renderer::draw_inspect_tooltip(const EntityInstance& ei,
+                                     const std::vector<EntityDef>& defs,
+                                     int mx, int my) {
+    const int sw = screen_w(), sh = screen_h();
+    constexpr int W   = 220;
+    constexpr int PAD = 8;
+
+    const EntityDef* def = find_entity_def(defs, ei.type_id);
+
+    std::vector<std::string> lines;
+    lines.push_back(def ? def->name : ei.type_id);
+    if (!ei.label.empty())
+        lines.push_back("\"" + ei.label + "\"");
+    if (def && !def->category.empty())
+        lines.push_back("[" + def->category + "]");
+    if (!ei.text_desc.empty())
+        lines.push_back(ei.text_desc);
+
+    const int line_h = 16;
+    const int H      = PAD * 2 + (int)lines.size() * line_h;
+
+    int px = mx + 14;
+    int py = my + 14;
+    if (px + W > sw - 4) px = mx - W - 8;
+    if (py + H > sh - 4) py = my - H - 8;
+    px = std::max(4, px);
+    py = std::max(4, py);
+
+    fill_rect(px, py, W, H, 12, 15, 24, 240);
+    draw_rect_outline(px, py, W, H, 80, 100, 140);
+
+    int ty = py + PAD;
+    for (int i = 0; i < (int)lines.size(); ++i) {
+        std::string ln = lines[i];
+        while (!ln.empty() && text_width(ln) > W - PAD * 2) ln.pop_back();
+        const char c = lines[i].empty() ? 0 : lines[i][0];
+        if      (i == 0) draw_text(ln, px + PAD, ty, 220, 225, 240);
+        else if (c == '[') draw_text(ln, px + PAD, ty, 100, 130, 160);
+        else if (c == '"') draw_text(ln, px + PAD, ty, 160, 165, 145);
+        else               draw_text(ln, px + PAD, ty, 155, 160, 170);
+        ty += line_h;
+    }
+}
+
 // ── Game controls overlay ─────────────────────────────────────────────────────
 
 void Renderer::draw_game_controls_overlay() {

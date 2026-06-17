@@ -26,6 +26,7 @@
 #include "LootTable.h"
 #include "ContainerUI.h"
 #include "TerminalPanel.h"
+#include "Hotbar.h"
 #include <random>
 
 #if __has_include(<SDL2/SDL_mixer.h>)
@@ -145,9 +146,14 @@ static bool run_game(Renderer& renderer, Map& map, const std::string& map_path,
     TextQueue text_queue;
     text_queue.set_profiles(&voice_profiles);
 
-    InventoryUI  inventory_ui;
-    ContainerUI  container_ui;
+    InventoryUI   inventory_ui;
+    ContainerUI   container_ui;
     TerminalPanel terminal_panel;
+    Hotbar        hotbar;
+
+    // Right-click inspect state (0 = none active).
+    uint32_t inspect_uid = 0;
+    int      inspect_sx  = 0, inspect_sy = 0;
 
     // Generate container contents once at game start
     {
@@ -273,6 +279,14 @@ static bool run_game(Renderer& renderer, Map& map, const std::string& map_path,
                 renderer.fill_rect(bx, cy+26, BAR_W, 9, 20,22,32);
                 renderer.fill_rect(bx, cy+26, (int)(BAR_W*f), 9, r,g,b);
             }
+        }
+
+        renderer.draw_hotbar(hotbar, inventory, item_defs);
+
+        if (inspect_uid != 0 && gs == GameState::EXPLORING) {
+            const EntityInstance* ei = map.find_entity_by_uid(inspect_uid);
+            if (ei) renderer.draw_inspect_tooltip(*ei, entity_defs, inspect_sx, inspect_sy);
+            else    inspect_uid = 0;
         }
 
         if (text_queue.is_active())
@@ -428,16 +442,28 @@ static bool run_game(Renderer& renderer, Map& map, const std::string& map_path,
                 cam.set_screen(event.window.data1, event.window.data2); continue;
             }
             if (event.type == SDL_MOUSEWHEEL) {
-                cam.zoom_step(event.wheel.y > 0 ? 1 : -1); continue;
+                hotbar.cycle_ability(event.wheel.y > 0 ? -1 : 1); continue;
             }
             if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
                 if (gs == GameState::INVENTORY)
                     inventory_ui.handle_mouse(event.button.x, event.button.y, renderer.screen_w());
                 continue;
             }
+            if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT) {
+                if (gs == GameState::EXPLORING) {
+                    int lx = event.button.x, ly = event.button.y;
+                    renderer.to_logical(lx, ly, lx, ly);
+                    const int tx = cam.to_tile_x(lx), ty = cam.to_tile_y(ly);
+                    const EntityInstance* ei = map.find_entity_at(tx, ty);
+                    if (ei) { inspect_uid = ei->uid; inspect_sx = lx; inspect_sy = ly; }
+                    else    { inspect_uid = 0; }
+                }
+                continue;
+            }
             if (event.type == SDL_KEYDOWN) {
                 const SDL_Keycode sym = event.key.keysym.sym;
                 if (sym == SDLK_ESCAPE) {
+                    if (inspect_uid) { inspect_uid = 0; continue; }
                     if (gs == GameState::INVENTORY || gs == GameState::CONTAINER
                         || gs == GameState::TERMINAL_DISPLAY) {
                         gs = GameState::EXPLORING;
@@ -445,6 +471,33 @@ static bool run_game(Renderer& renderer, Map& map, const std::string& map_path,
                         continue;
                     }
                     pause_menu.open(pause_mode); break;
+                }
+
+                // ── Hotbar: 1-9 = slots 0-8, 0 = slot 9 ─────────────────────
+                if (gs == GameState::EXPLORING || gs == GameState::INVENTORY) {
+                    int hslot = -1;
+                    if (sym >= SDLK_1 && sym <= SDLK_9) hslot = sym - SDLK_1;
+                    else if (sym == SDLK_0)              hslot = 9;
+                    if (hslot >= 0) {
+                        if (gs == GameState::EXPLORING) {
+                            hotbar.set_active_item(hslot == hotbar.active_item_slot ? -1 : hslot);
+                        } else {
+                            // Assign selected inventory item to this hotbar slot.
+                            const std::string iid =
+                                inventory_ui.selected_item_id(inventory, item_defs);
+                            if (!iid.empty()) {
+                                hotbar.assign_item(hslot, iid);
+                                TextEntry te;
+                                const ItemDef* d = find_item_def(item_defs, iid);
+                                te.text = (d ? d->name : iid)
+                                          + " assigned to slot " + std::to_string((hslot + 1) % 10) + ".";
+                                te.voice_profile_id = "station_ambient";
+                                te.dismiss = "auto";
+                                text_queue.push(te);
+                            }
+                        }
+                        continue;
+                    }
                 }
                 if (sym == SDLK_F11)    { renderer.toggle_fullscreen(); break; }
                 if (sym==SDLK_PLUS||sym==SDLK_EQUALS||sym==SDLK_KP_PLUS)  { cam.zoom_step( 1); continue; }

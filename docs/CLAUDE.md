@@ -217,6 +217,24 @@ Some entries redacted. Some wrong in ways that matter later.
 
 ## Planned Systems (Not Yet Implemented)
 
+**Multiplayer — Co-op Architecture**
+Target: 2-4 players, host-client model, same map loaded by all clients.
+The authoritative game state lives on the host. Clients send actions, receive state diffs.
+
+Core prep decisions already made:
+- `PlayerAction` enum will replace inline keyboard handling. In SP: keyboard → PlayerAction.
+  In MP: (keyboard OR network packet) → PlayerAction. Game logic only sees PlayerAction.
+- Map entity UIDs are already `uint32_t` — safe to reference across clients.
+- SaveSystem already serialises full game state — host snapshots use this.
+- `std::vector<Player>` replaces single `Player` when MP is wired in.
+  `local_player_idx` identifies which player this client controls.
+
+Networking library: SDL2_net (already available) or enet (preferred for reliability).
+Do not implement until single-player is feature-complete.
+Tag multiplayer prep points in code with `// MP_PREP:` comments.
+
+---
+
 **Hotbar — Items (1–0 keys)**
 Ten-slot horizontal hotbar at the bottom of the screen.
 Number keys 1–0 assign the held item. Holding an item makes it the active
